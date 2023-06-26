@@ -74,8 +74,16 @@ async function decryptItem(encryptedItem, masterKey) {
     return JSON.parse(sodium.to_string(item))
 }
 
+async function decryptBookmark(encryptedBookmark, masterKey) {
+    const decryptedBookmark = {
+        id: encryptedBookmark.id,
+        ...await decryptItem(encryptedBookmark, masterKey)
+    }
+    return decryptedBookmark
+}
+
 export default {
     computeRootKey,
     encryptItem,
-    decryptItem,
+    decryptBookmark,
 }
