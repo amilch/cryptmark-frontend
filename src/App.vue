@@ -1,21 +1,23 @@
 <script setup>
- import { RouterLink, RouterView } from 'vue-router'
- import store from './store/index.js'
+import {RouterLink, RouterView} from 'vue-router'
+import store from './store/index.js'
 </script>
 
 <template>
-    <header>
-	<div v-if="!store.getters.isLoggedIn()">
-	    <router-link to="/login">Login</router-link>
-	</div>
-	<div v-else>
-	    Welcome {{ store.getters.username() }}
-	</div>
-    </header>
-    <main>
-	<div class="container">
-	    <RouterView />
-	</div>
-    </main>
+    <v-toolbar>
+        <v-toolbar-title>CryptMark</v-toolbar-title>
+        <v-banner-text v-if="store.getters.isLoggedIn()">Welcome {{ store.getters.username() }}</v-banner-text>
+        <v-spacer></v-spacer>
+        <div v-if="!store.getters.isLoggedIn()">
+            <v-btn to="/login" variant="plain">Log In</v-btn>
+            <v-btn to="/signup" variant="plain">Sign Up</v-btn>
+        </div>
+        <div v-else>
+            <v-btn to="/logout" variant="plain">Logout</v-btn>
+        </div>
+
+    </v-toolbar>
+    <RouterView/>
+    <RouterView name="dialog" />
 
 </template>

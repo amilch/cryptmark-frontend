@@ -8,6 +8,7 @@ const state = reactive({
     masterKey: null,
     bookmarks: [],
     lastUpdate: null,
+    error: null,
 })
 
 const mutations = {
@@ -20,6 +21,12 @@ const mutations = {
     setBookmarks(bookmarks) {
         state.bookmarks = bookmarks
     },
+    setError(error) {
+        state.error = error
+    },
+    clearError(error) {
+        state.error = null
+    }
 }
 
 const getters = {
@@ -34,9 +41,14 @@ const getters = {
 const actions = {
     async authenticate(username, password) {
         let res = await fetch('http://localhost:8080/users/' + username + '/seed')
+        if (res.status !== 200) {
+            mutations.setError("Username not found")
+            return
+        }
         const seed = await res.text()
 
         const rootKey = await encryption.computeRootKey(username, password, seed)
+
         res = await fetch('http://localhost:8080/auth/authenticate', {
             method: 'POST',
             headers: {
@@ -47,14 +59,20 @@ const actions = {
                 password: rootKey.serverPassword,
             })
         })
+        if (res.status !== 200) {
+            mutations.setError("Could not log in. Is your password correct?")
+            return
+        }
         const {token} = await res.json()
+
         mutations.setToken(token)
         mutations.setMasterKey(rootKey.masterKey)
         router.replace('/')
     },
 
-    async register(username, password) {
+    async signup(username, password) {
         const rootKey = await encryption.computeRootKey(username, password)
+        // TODO: change api endpoint from register to signup
         const res = await fetch('http://localhost:8080/auth/register', {
             method: 'POST',
             headers: {
@@ -66,7 +84,12 @@ const actions = {
                 seed: rootKey.seed,
             })
         })
+        if (res.status !== 200) {
+            mutations.setError("Could not create account. Please try another username.")
+            return
+        }
         const {token} = await res.json()
+
         mutations.setToken(token)
         mutations.setMasterKey(rootKey.masterKey)
         router.replace('/')
