@@ -2,8 +2,7 @@ import {reactive, watch} from 'vue'
 import router from '../router/index'
 import jwt_decode from 'jwt-decode'
 import encryption from '@/utils/encryption'
-
-const baseUrl = `${import.meta.env.VITE_API_URL}`
+import fetchAPI from "@/utils/fetchAPI";
 
 const state = reactive({
     auth: {
@@ -19,7 +18,8 @@ try {
     if (auth) {
         state.auth = auth
     }
-} catch (e) {}
+} catch (e) {
+}
 
 watch(() => state.auth, auth => {
     sessionStorage.setItem('auth', JSON.stringify(auth))
@@ -39,7 +39,7 @@ const getters = {
 
 const actions = {
     async authenticate(username, password) {
-        let res = await fetch(`${baseUrl}/users/${username}/seed`)
+        let res = await fetchAPI(`/users/${username}/seed`)
         if (res.status !== 200) {
             state.error = "Username not found"
             return
@@ -48,15 +48,9 @@ const actions = {
 
         const rootKey = await encryption.computeRootKey(username, password, seed)
 
-        res = await fetch(`${baseUrl}/auth/authenticate`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: username,
-                password: rootKey.serverPassword,
-            })
+        res = await fetchAPI(`/auth/authenticate`, 'POST', {
+            username: username,
+            password: rootKey.serverPassword,
         })
         if (res.status !== 200) {
             state.error = "Could not log in. Is your password correct?"
@@ -72,16 +66,10 @@ const actions = {
     async signup(username, password) {
         const rootKey = await encryption.computeRootKey(username, password)
         // TODO: change api endpoint from register to signup
-        const res = await fetch(`${baseUrl}/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: username,
-                password: rootKey.serverPassword,
-                seed: rootKey.seed,
-            })
+        const res = await fetchAPI('/auth/register', 'POST', {
+            username: username,
+            password: rootKey.serverPassword,
+            seed: rootKey.seed,
         })
         if (res.status !== 200) {
             state.error = "Could not create account. Please try another username."
@@ -100,14 +88,10 @@ const actions = {
             url: url
         }, state.auth.masterKey)
 
-        const res = await fetch(`${baseUrl}/bookmarks`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + state.auth.token,
-            },
-            body: JSON.stringify(body)
-        })
+        const res = await fetchAPI('/bookmarks', 'POST', body)
+        if (res.status !== 200) {
+            return this.logout({sessionTimeout: true})
+        }
         const bookmark = await res.json()
         const decryptedBookmark = await encryption.decryptBookmark(bookmark, state.auth.masterKey)
         state.bookmarks.set(decryptedBookmark.id, decryptedBookmark)
@@ -125,14 +109,11 @@ const actions = {
             }, state.auth.masterKey),
         }
 
-        const res = await fetch(`${baseUrl}/bookmarks`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + state.auth.token,
-            },
-            body: JSON.stringify(body)
-        })
+        const res = await fetchAPI('/bookmarks', 'POST', body)
+        if (res.status !== 200) {
+            return this.logout({sessionTimeout: true})
+        }
+
         const bookmark = await res.json()
         const decryptedBookmark = await encryption.decryptBookmark(bookmark, state.auth.masterKey)
         state.bookmarks.set(decryptedBookmark.id, decryptedBookmark)
@@ -141,13 +122,10 @@ const actions = {
     },
 
     async getAll() {
-        const res = await fetch(`${baseUrl}/bookmarks`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + state.auth.token,
-            },
-        })
+        const res = await fetchAPI('/bookmarks', 'GET')
+        if (res.status !== 200) {
+            return this.logout({sessionTimeout: true})
+        }
         const bookmarks = await res.json()
         console.log(bookmarks)
         const decryptedBookmarks = await Promise.all(bookmarks.map((bookmark) => encryption.decryptBookmark(bookmark, state.auth.masterKey)))
@@ -157,24 +135,23 @@ const actions = {
     ,
 
     async remove(bookmark) {
-        const res = await fetch(`${baseUrl}/bookmarks/${bookmark.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + state.auth.token,
-            },
-        })
-        console.log(await res.text)
-
         state.bookmarks.delete(bookmark.id)
+
+        const res = await fetchAPI(`/bookmarks/${bookmark.id}`, 'DELETE')
+        if (res.status !== 200) {
+            return this.logout({sessionTimeout: true})
+        }
     },
 
-    async logout() {
+    async logout({sessionTimeout} = {}) {
         state.auth = {
             masterKey: null,
             token: null,
         }
         await router.push('/login')
+        if (sessionTimeout) {
+            state.error = "You're session ended. Please sign in again."
+        }
     }
 }
 
