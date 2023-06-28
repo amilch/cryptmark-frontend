@@ -2,6 +2,9 @@
 import {computed, ref} from 'vue'
 import store from '@/store/index'
 import router from '@/router/index'
+import {useRoute} from "vue-router";
+
+const route = useRoute()
 
 const username = ref('')
 const password = ref('')
@@ -16,7 +19,8 @@ const rules = ref({
 const formModel = ref(false)
 const formRef = ref(null)
 const loading = ref(false)
-const isSigningUp = computed(() => router.currentRoute.value.path === '/signup')
+
+const isSigningUp = computed(() => route.path === '/signup')
 
 async function handleForm() {
     loading.value = true
@@ -49,6 +53,7 @@ async function changeToSignUp() {
                     ref="formRef"
                     class="pa-4">
                 <v-text-field
+                        autofocus
                         v-model="username"
                         :rules="[rules.required]"
                         class="mb-2"

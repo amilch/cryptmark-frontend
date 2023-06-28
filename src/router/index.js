@@ -28,6 +28,14 @@ const router = createRouter({
                 dialog: () => import('../views/AddView.vue'),
             }
         },
+        {
+            path: '/edit/:id',
+            name: 'edit',
+            components: {
+                default: () => import('../views/ListView.vue'),
+                dialog: () => import('../views/AddView.vue'),
+            }
+        },
     ]
 })
 

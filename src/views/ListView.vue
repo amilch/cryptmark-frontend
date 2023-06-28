@@ -4,8 +4,11 @@ import store from '../store/index'
 import BookmarkList from '../components/BookmarkList.vue'
 
 const title = computed(() => {
-    const l = store.state.bookmarks.length
-    return l != 0 ? `Bookmarks (${l})` : 'Bookmarks'
+    if (!!store.state.bookmarks && store.state.bookmarks.length > 0) {
+        return `Bookmarks (${store.state.bookmarks.length})`
+    } else {
+        return 'Bookmarks'
+    }
 })
 
 </script>
@@ -13,13 +16,12 @@ const title = computed(() => {
 <template>
     <v-row justify="center" class="pa-4">
         <v-col cols="12" md="9">
-            <v-row>
+            <v-row class="mb-8 align-center">
                 <v-col>
                     <h1>{{ title }}</h1>
                 </v-col>
-                <v-spacer/>
                 <v-col cols="auto">
-                    <v-btn to="/add" size="large">Add</v-btn>
+                    <v-btn to="/add" size="large" prepend-icon="mdi-plus">New</v-btn>
                 </v-col>
             </v-row>
             <div>
