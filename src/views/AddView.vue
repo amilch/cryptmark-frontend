@@ -16,6 +16,7 @@ const rules = ref({
 const form = ref(false)
 const dialog = ref(true)
 const bookmark = ref(null)
+const loading = ref(false)
 
 const hasPendingChanges = computed(() => !bookmark.value ||
     url.value !== bookmark.value.url || title.value !== bookmark.value.title)
@@ -28,16 +29,18 @@ onMounted(() => {
     }
 })
 
-function handleForm() {
+async function handleForm() {
+    loading.value = true
     if (!!bookmark.value) {
-        store.actions.edit({
+        await store.actions.edit({
             id: bookmark.value.id,
             title: title.value,
             url: url.value,
         })
     } else {
-        store.actions.add({url: url.value, title: title.value})
+        await store.actions.add({url: url.value, title: title.value})
     }
+    loading.value = false
 }
 
 function abort() {
@@ -60,7 +63,7 @@ function abort() {
                               autofocus class="mb-2" clearable label="URL"/>
                 <v-text-field v-model="title" class="mb-2" clearable label="Title (Optional)"/>
                 <div class="text-end">
-                    <v-btn type="submit" :disabled="!form || !hasPendingChanges" size="large" variant="tonal">Save
+                    <v-btn type="submit" :loading="loading" :disabled="!form || !hasPendingChanges" size="large" variant="tonal">Save
                     </v-btn>
                 </div>
             </v-form>
