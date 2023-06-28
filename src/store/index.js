@@ -1,4 +1,4 @@
-import {reactive} from 'vue'
+import {reactive, toRaw, watch} from 'vue'
 import router from '../router/index'
 import jwt_decode from 'jwt-decode'
 import encryption from '@/utils/encryption'
@@ -6,34 +6,41 @@ import encryption from '@/utils/encryption'
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 const state = reactive({
-    token: null,
-    masterKey: null,
+    auth: {
+        token: null,
+        masterKey: null,
+    },
     bookmarks: null,
-    lastUpdate: null,
     error: null,
 })
 
+try {
+    const auth = JSON.parse(sessionStorage.getItem('auth'))
+    if (auth) {
+        state.auth = auth
+    }
+} catch (e) {}
+
+watch(() => state.auth, auth => {
+    sessionStorage.setItem('auth', JSON.stringify(auth))
+}, {deep: true})
+
+
 const mutations = {
-    setToken(token) {
-        state.token = token
-    },
-    setMasterKey(key) {
-        state.masterKey = key
-    },
     setError(error) {
         state.error = error
     },
-    clearError(error) {
+    clearError() {
         state.error = null
     }
 }
 
 const getters = {
     username() {
-        return jwt_decode(state.token).sub
+        return jwt_decode(state.auth.token).sub
     },
     isLoggedIn() {
-        return !!state.token
+        return !!state.auth.token
     },
     bookmark(id) {
         return state.bookmarks.get(id)
@@ -67,8 +74,8 @@ const actions = {
         }
         const {token} = await res.json()
 
-        mutations.setToken(token)
-        mutations.setMasterKey(rootKey.masterKey)
+        state.auth.token = token
+        state.auth.masterKey = rootKey.masterKey
         router.replace('/')
     },
 
@@ -92,8 +99,8 @@ const actions = {
         }
         const {token} = await res.json()
 
-        mutations.setToken(token)
-        mutations.setMasterKey(rootKey.masterKey)
+        state.auth.token = token
+        state.auth.masterKey = rootKey.masterKey
         router.replace('/')
     },
 
@@ -101,18 +108,18 @@ const actions = {
         const body = await encryption.encryptItem({
             title: title,
             url: url
-        }, state.masterKey)
+        }, state.auth.masterKey)
 
         const res = await fetch(`${baseUrl}/bookmarks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + state.token,
+                'Authorization': 'Bearer ' + state.auth.token,
             },
             body: JSON.stringify(body)
         })
         const bookmark = await res.json()
-        const decryptedBookmark = await encryption.decryptBookmark(bookmark, state.masterKey)
+        const decryptedBookmark = await encryption.decryptBookmark(bookmark, state.auth.masterKey)
         state.bookmarks.set(decryptedBookmark.id, decryptedBookmark)
 
         router.replace('/')
@@ -125,19 +132,19 @@ const actions = {
                 id: id,
                 title: title,
                 url: url
-            }, state.masterKey),
+            }, state.auth.masterKey),
         }
 
         const res = await fetch(`${baseUrl}/bookmarks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + state.token,
+                'Authorization': 'Bearer ' + state.auth.token,
             },
             body: JSON.stringify(body)
         })
         const bookmark = await res.json()
-        const decryptedBookmark = await encryption.decryptBookmark(bookmark, state.masterKey)
+        const decryptedBookmark = await encryption.decryptBookmark(bookmark, state.auth.masterKey)
         state.bookmarks.set(decryptedBookmark.id, decryptedBookmark)
 
         router.replace('/')
@@ -148,12 +155,12 @@ const actions = {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + state.token,
+                'Authorization': 'Bearer ' + state.auth.token,
             },
         })
         const bookmarks = await res.json()
         console.log(bookmarks)
-        const decryptedBookmarks = await Promise.all(bookmarks.map((bookmark) => encryption.decryptBookmark(bookmark, state.masterKey)))
+        const decryptedBookmarks = await Promise.all(bookmarks.map((bookmark) => encryption.decryptBookmark(bookmark, state.auth.masterKey)))
         console.log(decryptedBookmarks)
         state.bookmarks = new Map(decryptedBookmarks.map(b => [b.id, b]))
     }
@@ -164,12 +171,20 @@ const actions = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + state.token,
+                'Authorization': 'Bearer ' + state.auth.token,
             },
         })
         console.log(await res.text)
 
         state.bookmarks.delete(bookmark.id)
+    },
+
+    async logout() {
+        state.auth = {
+            masterKey: null,
+            token: null,
+        }
+        await router.push('/login')
     }
 }
 

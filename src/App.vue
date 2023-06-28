@@ -13,7 +13,7 @@ import store from './store/index.js'
             <v-btn to="/signup" variant="plain">Sign Up</v-btn>
         </div>
         <div v-else>
-            <v-btn to="/logout" variant="plain">Logout</v-btn>
+            <v-btn @click="store.actions.logout" variant="plain">Logout</v-btn>
         </div>
 
     </v-toolbar>

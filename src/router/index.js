@@ -42,10 +42,11 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
     store.mutations.clearError()
 
-
-
-    if (!store.getters.isLoggedIn() && to.name !== 'login' && to.name !== 'signup') {
+    const loginRoutes = ['login', 'signup']
+    if (!store.getters.isLoggedIn() && !loginRoutes.includes(to.name)) {
         return {name: 'login'}
+    } else if (store.getters.isLoggedIn() && loginRoutes.includes(to.name)) {
+        return {name: 'home'}
     }
 })
 
