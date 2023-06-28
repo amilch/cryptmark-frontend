@@ -1,4 +1,4 @@
-import {reactive, toRaw, watch} from 'vue'
+import {reactive, watch} from 'vue'
 import router from '../router/index'
 import jwt_decode from 'jwt-decode'
 import encryption from '@/utils/encryption'
@@ -25,16 +25,6 @@ watch(() => state.auth, auth => {
     sessionStorage.setItem('auth', JSON.stringify(auth))
 }, {deep: true})
 
-
-const mutations = {
-    setError(error) {
-        state.error = error
-    },
-    clearError() {
-        state.error = null
-    }
-}
-
 const getters = {
     username() {
         return jwt_decode(state.auth.token).sub
@@ -51,7 +41,7 @@ const actions = {
     async authenticate(username, password) {
         let res = await fetch(`${baseUrl}/users/${username}/seed`)
         if (res.status !== 200) {
-            mutations.setError("Username not found")
+            state.error = "Username not found"
             return
         }
         const seed = await res.text()
@@ -69,7 +59,7 @@ const actions = {
             })
         })
         if (res.status !== 200) {
-            mutations.setError("Could not log in. Is your password correct?")
+            state.error = "Could not log in. Is your password correct?"
             return
         }
         const {token} = await res.json()
@@ -94,7 +84,7 @@ const actions = {
             })
         })
         if (res.status !== 200) {
-            mutations.setError("Could not create account. Please try another username.")
+            state.error = "Could not create account. Please try another username."
             return
         }
         const {token} = await res.json()
@@ -190,7 +180,6 @@ const actions = {
 
 export default {
     state,
-    mutations,
     getters,
     actions,
 }

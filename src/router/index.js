@@ -40,7 +40,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
-    store.mutations.clearError()
+    store.state.error = null
 
     const loginRoutes = ['login', 'signup']
     if (!store.getters.isLoggedIn() && !loginRoutes.includes(to.name)) {
