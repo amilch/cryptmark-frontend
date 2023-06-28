@@ -41,6 +41,9 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
     store.mutations.clearError()
+
+
+
     if (!store.getters.isLoggedIn() && to.name !== 'login' && to.name !== 'signup') {
         return {name: 'login'}
     }

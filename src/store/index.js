@@ -3,6 +3,8 @@ import router from '../router/index'
 import jwt_decode from 'jwt-decode'
 import encryption from '@/utils/encryption'
 
+const baseUrl = `${import.meta.env.VITE_API_URL}`
+
 const state = reactive({
     token: null,
     masterKey: null,
@@ -40,7 +42,7 @@ const getters = {
 
 const actions = {
     async authenticate(username, password) {
-        let res = await fetch('http://localhost:8080/users/' + username + '/seed')
+        let res = await fetch(`${baseUrl}/users/${username}/seed`)
         if (res.status !== 200) {
             mutations.setError("Username not found")
             return
@@ -49,7 +51,7 @@ const actions = {
 
         const rootKey = await encryption.computeRootKey(username, password, seed)
 
-        res = await fetch('http://localhost:8080/auth/authenticate', {
+        res = await fetch(`${baseUrl}/auth/authenticate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -73,7 +75,7 @@ const actions = {
     async signup(username, password) {
         const rootKey = await encryption.computeRootKey(username, password)
         // TODO: change api endpoint from register to signup
-        const res = await fetch('http://localhost:8080/auth/register', {
+        const res = await fetch(`${baseUrl}/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -101,7 +103,7 @@ const actions = {
             url: url
         }, state.masterKey)
 
-        const res = await fetch('http://localhost:8080/bookmarks', {
+        const res = await fetch(`${baseUrl}/bookmarks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -126,7 +128,7 @@ const actions = {
             }, state.masterKey),
         }
 
-        const res = await fetch('http://localhost:8080/bookmarks', {
+        const res = await fetch(`${baseUrl}/bookmarks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -142,7 +144,7 @@ const actions = {
     },
 
     async getAll() {
-        const res = await fetch('http://localhost:8080/users/' + getters.username() + '/bookmarks', {
+        const res = await fetch(`${baseUrl}/bookmarks`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -158,7 +160,7 @@ const actions = {
     ,
 
     async remove(bookmark) {
-        const res = await fetch(`http://localhost:8080/bookmarks/${bookmark.id}`, {
+        const res = await fetch(`${baseUrl}/bookmarks/${bookmark.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
