@@ -109,7 +109,7 @@ const actions = {
             }, state.auth.masterKey),
         }
 
-        const res = await fetchAPI('/bookmarks', 'POST', body)
+        const res = await fetchAPI('/bookmarks', 'PUT', body)
         if (res.status !== 200) {
             return this.logout({sessionTimeout: true})
         }
