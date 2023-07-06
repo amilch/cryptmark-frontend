@@ -88,7 +88,7 @@ const actions = {
             url: url
         }, state.auth.masterKey)
 
-        const res = await fetchAPI('/bookmarks', 'POST', body)
+        const res = await fetchAPI('/bookmarks/', 'POST', body)
         if (res.status !== 200) {
             return this.logout({sessionTimeout: true})
         }
@@ -109,7 +109,7 @@ const actions = {
             }, state.auth.masterKey),
         }
 
-        const res = await fetchAPI('/bookmarks', 'PUT', body)
+        const res = await fetchAPI('/bookmarks/', 'PUT', body)
         if (res.status !== 200) {
             return this.logout({sessionTimeout: true})
         }
@@ -122,7 +122,7 @@ const actions = {
     },
 
     async getAll() {
-        const res = await fetchAPI('/bookmarks', 'GET')
+        const res = await fetchAPI('/bookmarks/', 'GET')
         if (res.status !== 200) {
             return this.logout({sessionTimeout: true})
         }
