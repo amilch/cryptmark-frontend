@@ -44,7 +44,6 @@ async function encryptItem(item, masterKey) {
     await _sodium.ready
     const sodium = _sodium
 
-    const json = JSON.stringify(item)
     const itemKey = sodium.crypto_aead_chacha20poly1305_ietf_keygen()
     const nonce = sodium.randombytes_buf(sodium.crypto_aead_chacha20poly1305_IETF_NPUBBYTES)
     const encryptedItem = sodium.crypto_aead_chacha20poly1305_ietf_encrypt(
@@ -75,11 +74,10 @@ async function decryptItem(encryptedItem, masterKey) {
 }
 
 async function decryptBookmark(encryptedBookmark, masterKey) {
-    const decryptedBookmark = {
+    return {
         id: encryptedBookmark.id,
         ...await decryptItem(encryptedBookmark, masterKey)
     }
-    return decryptedBookmark
 }
 
 export const exportedForTesting = {
