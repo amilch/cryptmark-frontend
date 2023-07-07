@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import encryption from "../encryption";
+import { encryption } from "../encryption";
 import { exportedForTesting } from "../encryption";
 
 describe('utils/encryption', () => {

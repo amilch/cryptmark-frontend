@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 
 import store from "@/store";
-import fetchAPI from "../fetchAPI";
+import { fetchAPI } from "../fetchAPI";
 
 describe('utils/fetchAPI', () => {
     it('doesSendBearerTokenWithRequestIfLoggedIn', async () => {

@@ -1,8 +1,7 @@
 import {reactive, watch} from 'vue'
 import router from '../router/index'
 import jwt_decode from 'jwt-decode'
-import encryption from '@/utils'
-import fetchAPI from "@/utils";
+import { encryption, fetchAPI } from '@/utils'
 
 const state = reactive({
     auth: {
@@ -13,17 +12,6 @@ const state = reactive({
     error: null,
 })
 
-try {
-    const auth = JSON.parse(sessionStorage.getItem('auth'))
-    if (auth) {
-        state.auth = auth
-    }
-} catch (e) {
-}
-
-watch(() => state.auth, auth => {
-    sessionStorage.setItem('auth', JSON.stringify(auth))
-}, {deep: true})
 
 const getters = {
     username() {
@@ -80,6 +68,17 @@ const actions = {
         state.auth.token = token
         state.auth.masterKey = rootKey.masterKey
         router.replace('/')
+    },
+
+    async logout({sessionTimeout} = {}) {
+        state.auth = {
+            masterKey: null,
+            token: null,
+        }
+        await router.push('/login')
+        if (sessionTimeout) {
+            state.error = "You're session ended. Please sign in again."
+        }
     },
 
     async add({url, title}) {
@@ -142,18 +141,18 @@ const actions = {
             return this.logout({sessionTimeout: true})
         }
     },
-
-    async logout({sessionTimeout} = {}) {
-        state.auth = {
-            masterKey: null,
-            token: null,
-        }
-        await router.push('/login')
-        if (sessionTimeout) {
-            state.error = "You're session ended. Please sign in again."
-        }
-    }
 }
+
+try {
+    const auth = JSON.parse(sessionStorage.getItem('auth'))
+    if (auth) {
+        state.auth = auth
+    }
+} catch (e) {}
+
+watch(() => state.auth, auth => {
+    sessionStorage.setItem('auth', JSON.stringify(auth))
+}, {deep: true})
 
 export default {
     state,

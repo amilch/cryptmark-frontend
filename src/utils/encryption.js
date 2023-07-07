@@ -86,7 +86,7 @@ export const exportedForTesting = {
     decryptItem,
 }
 
-export default {
+export const encryption = {
     computeRootKey,
     encryptItem,
     decryptBookmark,

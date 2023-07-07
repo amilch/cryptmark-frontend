@@ -1,6 +1,6 @@
 import store from '@/store/index'
 
-async function fetchAPI(url, method, body = null) {
+export async function fetchAPI(url, method, body = null) {
     const res = await fetch(import.meta.env.VITE_API_URL + url, {
         method: method,
         headers: {
@@ -13,5 +13,3 @@ async function fetchAPI(url, method, body = null) {
     })
     return res
 }
-
-export default fetchAPI
