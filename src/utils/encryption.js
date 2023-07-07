@@ -82,6 +82,12 @@ async function decryptBookmark(encryptedBookmark, masterKey) {
     return decryptedBookmark
 }
 
+export const exportedForTesting = {
+    packCipherNonce,
+    unpackCipherNonce,
+    decryptItem,
+}
+
 export default {
     computeRootKey,
     encryptItem,
