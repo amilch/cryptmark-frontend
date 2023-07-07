@@ -1,8 +1,8 @@
 import {reactive, watch} from 'vue'
 import router from '../router/index'
 import jwt_decode from 'jwt-decode'
-import encryption from '@/utils/encryption'
-import fetchAPI from "@/utils/fetchAPI";
+import encryption from '@/utils'
+import fetchAPI from "@/utils";
 
 const state = reactive({
     auth: {
