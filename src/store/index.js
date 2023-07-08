@@ -53,7 +53,6 @@ const actions = {
 
     async signup(username, password) {
         const rootKey = await encryption.computeRootKey(username, password)
-        // TODO: change api endpoint from register to signup
         const res = await fetchAPI('/auth/register', 'POST', {
             username: username,
             password: rootKey.serverPassword,
@@ -81,7 +80,8 @@ const actions = {
         }
     },
 
-    async add({url, title}) {
+    async addBookmark(bookmark) {
+        const {url, title} = bookmark
         const body = await encryption.encryptItem({
             title: title,
             url: url
@@ -91,14 +91,15 @@ const actions = {
         if (res.status !== 200) {
             return this.logout({sessionTimeout: true})
         }
-        const bookmark = await res.json()
-        const decryptedBookmark = await encryption.decryptBookmark(bookmark, state.auth.masterKey)
+        const encryptedBookmark = await res.json()
+        const decryptedBookmark = await encryption.decryptBookmark(encryptedBookmark, state.auth.masterKey)
         state.bookmarks.set(decryptedBookmark.id, decryptedBookmark)
 
         router.replace('/')
     },
 
-    async edit({id, url, title}) {
+    async editBookmark(bookmark) {
+        const {id, url, title} = bookmark
         const body = {
             id: id,
             ...await encryption.encryptItem({
@@ -113,14 +114,14 @@ const actions = {
             return this.logout({sessionTimeout: true})
         }
 
-        const bookmark = await res.json()
-        const decryptedBookmark = await encryption.decryptBookmark(bookmark, state.auth.masterKey)
+        const encryptedBookmark = await res.json()
+        const decryptedBookmark = await encryption.decryptBookmark(encryptedBookmark, state.auth.masterKey)
         state.bookmarks.set(decryptedBookmark.id, decryptedBookmark)
 
         router.replace('/')
     },
 
-    async getAll() {
+    async getAllBookmarks() {
         const res = await fetchAPI('/bookmarks/', 'GET')
         if (res.status !== 200) {
             return this.logout({sessionTimeout: true})
@@ -133,7 +134,7 @@ const actions = {
     }
     ,
 
-    async remove(bookmark) {
+    async removeBookmark(bookmark) {
         state.bookmarks.delete(bookmark.id)
 
         const res = await fetchAPI(`/bookmarks/${bookmark.id}`, 'DELETE')
@@ -141,6 +142,10 @@ const actions = {
             return this.logout({sessionTimeout: true})
         }
     },
+
+    visitBookmark(bookmark) {
+        window.open(bookmark.url, '_blank')
+    }
 }
 
 try {

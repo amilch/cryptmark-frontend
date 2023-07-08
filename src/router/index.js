@@ -7,7 +7,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: () => import('../views/ListView.vue')
+            component: () => import('../views/HomeView.vue')
         },
         {
             path: '/login',
@@ -23,7 +23,7 @@ const router = createRouter({
             path: '/add',
             name: 'add',
             components: {
-                default: () => import('../views/ListView.vue'),
+                default: () => import('../views/HomeView.vue'),
                 dialog: () => import('../views/AddView.vue'),
             }
         },
@@ -31,7 +31,7 @@ const router = createRouter({
             path: '/edit/:id',
             name: 'edit',
             components: {
-                default: () => import('../views/ListView.vue'),
+                default: () => import('../views/HomeView.vue'),
                 dialog: () => import('../views/AddView.vue'),
             }
         },

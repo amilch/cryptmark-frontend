@@ -32,13 +32,13 @@ onMounted(() => {
 async function handleForm() {
     loading.value = true
     if (!!bookmark.value) {
-        await store.actions.edit({
+        await store.actions.editBookmark({
             id: bookmark.value.id,
             title: title.value,
             url: url.value,
         })
     } else {
-        await store.actions.add({url: url.value, title: title.value})
+        await store.actions.addBookmark({url: url.value, title: title.value})
     }
     loading.value = false
 }
