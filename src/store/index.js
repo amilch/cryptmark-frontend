@@ -142,10 +142,6 @@ const actions = {
             return this.logout({sessionTimeout: true})
         }
     },
-
-    visitBookmark(bookmark) {
-        window.open(bookmark.url, '_blank')
-    }
 }
 
 try {

@@ -56,7 +56,7 @@ async function changeToLogIn() {
         {{ store.state.error }}
       </div>
 
-      <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ meta }" class="pa-4">
+      <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ meta }" >
         <FormField name="username" label="Username" autofocus />
         <FormField name="password" label="Password" :type="showPassword ? 'text' : 'password'" />
         <FormField
@@ -67,7 +67,7 @@ async function changeToLogIn() {
         />
         <FormCheck v-model="showPassword" label="Show password" />
 
-        <div class="text-center">
+        <div class="text-center mt-8">
           <Button
             type="submit"
             class="btn btn-light btn-lg my-4"
@@ -76,10 +76,10 @@ async function changeToLogIn() {
             :loading="loading"
           />
           <div>
-            <button @click="changeToSignUp()" class="btn btn-link text-black" v-if="!isSigningUp">
+            <button @click="changeToSignUp()" class="btn btn-link" v-if="!isSigningUp">
               No account? Sign up instead
             </button>
-            <button @click="changeToLogIn()" class="btn btn-link text-black" v-else>
+            <button @click="changeToLogIn()" class="btn btn-link" v-else>
               Log in with existing account instead
             </button>
           </div>

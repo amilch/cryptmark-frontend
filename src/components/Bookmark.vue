@@ -1,11 +1,14 @@
 <script setup>
+import router from "@/router";
+import store from "@/store";
+
 defineProps(['bookmark', 'onVisit', 'onEdit', 'onDelete'])
+
 </script>
 
 <template>
-  <a href="#"
+  <a :href="$props.bookmark.url" target="_blank"
     class="list-group-item list-group-item-action d-flex"
-    @click.prevent="$props.onVisit($props.bookmark, $event)"
   >
     <div class="flex-grow-1">
       <div class="">{{ bookmark.title ? bookmark.title : bookmark.url }}</div>
@@ -13,13 +16,13 @@ defineProps(['bookmark', 'onVisit', 'onEdit', 'onDelete'])
     </div>
     <button
       class="btn btn-link btn-lg"
-      @click.native.capture="$props.onEdit($props.bookmark, $event)"
+      @click.prevent="$props.onEdit($props.bookmark)"
     >
       <span class="mdi mdi-pencil fs-4"></span>
     </button>
     <button
       class="btn btn-link btn-lg"
-      @click.native.capture="$props.onDelete($props.bookmark, $event)"
+      @click.prevent="$props.onDelete($props.bookmark)"
     >
       <span class="mdi mdi-delete fs-4"></span>
     </button>
