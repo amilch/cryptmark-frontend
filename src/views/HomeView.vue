@@ -15,7 +15,7 @@ const title = computed(() => {
 
 <template>
   <div class="row justify-content-center">
-    <div class="col-md-9 pa-4">
+    <div class="col-md-9 pa-7">
       <header class="d-flex align-items-center mb-8">
         <h1 class="flex-grow-1">{{ title }}</h1>
         <button class="btn btn-light btn-lg" @click="$router.push('/add')">
