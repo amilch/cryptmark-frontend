@@ -47,12 +47,12 @@ async function changeToLogIn() {
 <template>
   <div class="row justify-content-center">
     <div class="col-xl-4">
-      <header class="py-4">
+      <header class="py-5">
         <h1 class="text-center">{{ !!isSigningUp ? 'Sign Up' : 'Log In' }}</h1>
-        <p class="text-center" v-if="!isSigningUp">or sign up for a new account</p>
+        <p class="text-center mb-0" v-if="!isSigningUp">or sign up for a new account</p>
       </header>
 
-      <div v-if="!!store.state.error" class="alert alert-danger mt-4" role="alert">
+      <div v-if="!!store.state.error" class="alert alert-danger" role="alert">
         {{ store.state.error }}
       </div>
 
@@ -67,7 +67,7 @@ async function changeToLogIn() {
         />
         <FormCheck v-model="showPassword" label="Show password" />
 
-        <div class="text-center mt-4">
+        <div class="text-center">
           <Button
             type="submit"
             class="btn btn-light btn-lg my-4"
