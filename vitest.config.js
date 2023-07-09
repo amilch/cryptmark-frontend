@@ -8,10 +8,6 @@ export default mergeConfig(
   defineConfig({
     test: {
       globals: true,
-      setupFiles: 'vuetify.config.js',
-      deps: {
-        inline: ['vuetify']
-      },
       environment: 'jsdom',
       exclude: [...configDefaults.exclude, 'e2e/*'],
       root: fileURLToPath(new URL('./', import.meta.url)),
