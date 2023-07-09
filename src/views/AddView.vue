@@ -7,13 +7,6 @@ import { urlUtils } from '@/utils'
 
 const route = useRoute()
 
-const url = ref('')
-const title = ref('')
-const rules = ref({
-    required: value => !!value || 'Field is required',
-    isURL: value => urlUtils.isURL(value) || 'No valid URL',
-})
-const form = ref(false)
 const dialog = ref(true)
 const bookmark = ref(null)
 const loading = ref(false)
@@ -50,8 +43,23 @@ function abort() {
 </script>
 
 <template>
-    <v-dialog persistent v-model="dialog" max-width="960">
-        {{ hasPendingChanges }}
+  <div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Modal body text goes here.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
         <v-card>
             <template v-slot:title>{{ bookmark ? 'Edit' : 'New' }} Bookmark</template>
             <template v-slot:append>
@@ -68,7 +76,6 @@ function abort() {
                 </div>
             </v-form>
         </v-card>
-    </v-dialog>
 </template>
 
 
