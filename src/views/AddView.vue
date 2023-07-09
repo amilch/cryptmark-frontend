@@ -51,7 +51,7 @@ function onAbort() {
 <template>
   <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ meta }" :initial-values="bookmark">
     <Modal ref="modal" :title="(bookmark ? 'Edit' : 'New') + ' Bookmark'">
-      <FormField name="url" autofocus label="URL" />
+      <FormField class="mt-4" name="url" autofocus label="URL" />
       <FormField name="title" label="Title" />
       <template v-slot:footer>
         <button type="button" class="btn btn-link text-decoration-none" @click="onAbort">

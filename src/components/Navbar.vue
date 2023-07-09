@@ -3,7 +3,7 @@ import store from '@/store'
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-lg bg-body-secondary">
+  <nav class="navbar navbar-expand-lg bg-body-secondary mb-4">
     <div class="container-fluid mx-1 align-items-center">
       <a class="navbar-brand" href="/">Cryptmark</a>
       <div v-if="store.getters.isLoggedIn()">
