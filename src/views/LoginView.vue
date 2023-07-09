@@ -46,8 +46,8 @@ async function changeToLogIn() {
 
 <template>
   <div class="row justify-content-center">
-    <div class="col-md-4">
-      <header class="py-8">
+    <div class="col-xl-4">
+      <header class="py-4">
         <h1 class="text-center">{{ !!isSigningUp ? 'Sign Up' : 'Log In' }}</h1>
         <p class="text-center" v-if="!isSigningUp">or sign up for a new account</p>
       </header>
@@ -67,7 +67,7 @@ async function changeToLogIn() {
         />
         <FormCheck v-model="showPassword" label="Show password" />
 
-        <div class="text-center mt-8">
+        <div class="text-center mt-4">
           <Button
             type="submit"
             class="btn btn-light btn-lg my-4"

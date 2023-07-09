@@ -4,7 +4,7 @@ import store from '@/store'
 
 <template>
   <nav class="navbar navbar-expand-lg bg-body-secondary mb-4">
-    <div class="container-fluid mx-1 align-items-center">
+    <div class="container-lg mx-auto align-items-center">
       <a class="navbar-brand" href="/">Cryptmark</a>
       <div v-if="store.getters.isLoggedIn()">
         Welcome {{ store.getters.username() }}
