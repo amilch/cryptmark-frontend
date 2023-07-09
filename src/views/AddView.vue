@@ -59,7 +59,7 @@ function abort() {
             </template>
             <v-divider style="margin-top:14px"/>
             <v-form class="px-6 py-8" v-model="form" @submit.prevent="handleForm">
-                <v-text-field v-model="urlUtils" :rules="[rules.required, rules.isURL]"
+                <v-text-field v-model="url" :rules="[rules.required, rules.isURL]"
                               autofocus class="mb-2" clearable label="URL"/>
                 <v-text-field v-model="title" class="mb-2" clearable label="Title (Optional)"/>
                 <div class="text-end">

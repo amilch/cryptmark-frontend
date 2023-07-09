@@ -105,7 +105,7 @@ const actions = {
             ...await encryption.encryptItem({
                 id: id,
                 title: title,
-                url: url
+                url: urlUtils.getWholeURL(url)
             }, state.auth.masterKey),
         }
 
