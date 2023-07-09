@@ -1,7 +1,7 @@
 import {reactive, watch} from 'vue'
 import router from '../router/index'
 import jwt_decode from 'jwt-decode'
-import { encryption, fetchAPI } from '@/utils'
+import {encryption, fetchAPI, urlUtils} from '@/utils'
 
 const state = reactive({
     auth: {
@@ -84,7 +84,7 @@ const actions = {
         const {url, title} = bookmark
         const body = await encryption.encryptItem({
             title: title,
-            url: url
+            url: urlUtils.getWholeURL(url)
         }, state.auth.masterKey)
 
         const res = await fetchAPI('/bookmarks/', 'POST', body)

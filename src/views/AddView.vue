@@ -2,8 +2,8 @@
 import {computed, onMounted, ref, watch} from 'vue'
 import store from '@/store/index'
 import router from '@/router/index'
-import isURL from "validator/es/lib/isURL"
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router"
+import { urlUtils } from '@/utils'
 
 const route = useRoute()
 
@@ -11,7 +11,7 @@ const url = ref('')
 const title = ref('')
 const rules = ref({
     required: value => !!value || 'Field is required',
-    isURL: value => isURL(value) || 'No valid URL',
+    isURL: value => urlUtils.isURL(value) || 'No valid URL',
 })
 const form = ref(false)
 const dialog = ref(true)
@@ -59,7 +59,7 @@ function abort() {
             </template>
             <v-divider style="margin-top:14px"/>
             <v-form class="px-6 py-8" v-model="form" @submit.prevent="handleForm">
-                <v-text-field v-model="url" :rules="[rules.required, rules.isURL]"
+                <v-text-field v-model="urlUtils" :rules="[rules.required, rules.isURL]"
                               autofocus class="mb-2" clearable label="URL"/>
                 <v-text-field v-model="title" class="mb-2" clearable label="Title (Optional)"/>
                 <div class="text-end">
