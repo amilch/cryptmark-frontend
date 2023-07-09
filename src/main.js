@@ -1,3 +1,6 @@
+import './assets/styles.scss'
+import * as bootstrap from 'bootstrap'
+
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -18,6 +21,14 @@ const vuetify = createVuetify({
     }
 })
 
+import { configure } from 'vee-validate';
+// Default values
+configure({
+    validateOnBlur: true,
+    validateOnChange: true,
+    validateOnInput: true,
+    validateOnModelUpdate: true, // controls if `update:modelValue` events should trigger validation with `handleChange` handler
+});
 
 const app = createApp(App)
 app.use(router)

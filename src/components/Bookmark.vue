@@ -3,23 +3,25 @@ defineProps(['bookmark', 'onVisit', 'onEdit', 'onDelete'])
 </script>
 
 <template>
-  <v-list-item
-      class="py-2"
-      :key="$props.bookmark.id"
-      :value="$props.bookmark"
-      :title="$props.bookmark.title ? $props.bookmark.title : $props.bookmark.url"
-      :subtitle="$props.bookmark.title ? $props.bookmark.url : ''"
-      @click="$props.onVisit($props.bookmark, $event)"
+  <a href="#"
+    class="list-group-item list-group-item-action d-flex"
+    @click.prevent="$props.onVisit($props.bookmark, $event)"
   >
-    <template v-slot:append>
-      <v-btn
-          @click.native.capture="$props.onEdit($props.bookmark, $event)"
-          icon="mdi-pencil"
-          variant="plain"/>
-      <v-btn
-          @click.native.capture="$props.onDelete($props.bookmark, $event)"
-          icon="mdi-delete"
-          variant="plain"/>
-    </template>
-  </v-list-item>
+    <div class="flex-grow-1">
+      <div class="">{{ bookmark.title ? bookmark.title : bookmark.url }}</div>
+      <div class="small text-muted">{{ bookmark.title ? bookmark.url : '' }}</div>
+    </div>
+    <button
+      class="btn btn-link btn-lg"
+      @click.native.capture="$props.onEdit($props.bookmark, $event)"
+    >
+      <span class="mdi mdi-pencil fs-4"></span>
+    </button>
+    <button
+      class="btn btn-link btn-lg"
+      @click.native.capture="$props.onDelete($props.bookmark, $event)"
+    >
+      <span class="mdi mdi-delete fs-4"></span>
+    </button>
+  </a>
 </template>

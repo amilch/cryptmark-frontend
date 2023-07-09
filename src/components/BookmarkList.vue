@@ -21,13 +21,13 @@ await store.actions.getAllBookmarks()
 </script>
 
 <template>
-  <v-list lines="two">
+  <ul class="list-group">
     <Bookmark
-      v-for="[_, bookmark] in store.state.bookmarks"
-      :bookmark="bookmark"
-      :on-visit="visitBookmark"
-      :on-edit="editBookmark"
-      :on-delete="deleteBookmark"
+        v-for="[_, bookmark] in store.state.bookmarks"
+        :bookmark="bookmark"
+        :on-visit="visitBookmark"
+        :on-edit="editBookmark"
+        :on-delete="deleteBookmark"
     />
-  </v-list>
+  </ul>
 </template>
