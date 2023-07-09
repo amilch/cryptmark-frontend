@@ -56,9 +56,14 @@ async function changeToLogIn() {
         {{ store.state.error }}
       </div>
 
-      <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ meta }" >
+      <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ meta }">
         <FormField name="username" label="Username" autofocus />
-        <FormField name="password" label="Password" :type="showPassword ? 'text' : 'password'" />
+        <FormField
+          name="password"
+          label="Password"
+          :type="showPassword ? 'text' : 'password'"
+          :validateOnInput="!!isSigningUp"
+        />
         <FormField
           name="password2"
           label="Repeat your password"
