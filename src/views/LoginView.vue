@@ -14,16 +14,24 @@ const route = useRoute()
 const showPassword = ref(false)
 const loading = ref(false)
 
+const isSigningUp = computed(() => route.path === '/signup')
+
 const schema = yup.object({
   username: yup.string().required('Username is required'),
   password: yup
     .string()
     .required('Password is required')
-    .min(8, 'Password must contain at least 8 characters'),
-  password2: yup.string().oneOf([yup.ref('password')], 'Passwords must match')
+    .min(8, 'Password must contain at least 8 characters')
 })
 
-const isSigningUp = computed(() => route.path === '/signup')
+const signUpSchema = schema.concat(
+  yup.object({
+    password2: yup
+      .string()
+      .required('Passwords must match')
+      .oneOf([yup.ref('password')], 'Passwords must match')
+  })
+)
 
 async function onSubmit(values) {
   loading.value = true
@@ -56,7 +64,11 @@ async function changeToLogIn() {
         {{ store.state.error }}
       </div>
 
-      <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ meta }">
+      <Form
+        @submit="onSubmit"
+        :validation-schema="isSigningUp ? signUpSchema : schema"
+        v-slot="{ meta }"
+      >
         <FormField name="username" label="Username" autofocus />
         <FormField
           name="password"
@@ -81,10 +93,10 @@ async function changeToLogIn() {
             :loading="loading"
           />
           <div>
-            <button @click="changeToSignUp()" class="btn btn-link" v-if="!isSigningUp">
+            <button type="button" @click="changeToSignUp()" class="btn btn-link" v-if="!isSigningUp">
               No account? Sign up instead
             </button>
-            <button @click="changeToLogIn()" class="btn btn-link" v-else>
+            <button type="button" @click="changeToLogIn()" class="btn btn-link" v-else>
               Log in with existing account instead
             </button>
           </div>
